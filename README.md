@@ -6,6 +6,7 @@ Responds to publishing events generated code such as
 
 ```java
 Bukkit.getServer().getPluginManager().callEvent(new PublishableEvent(player, message));
+```
 
 No other direct integration is necessary.
 
