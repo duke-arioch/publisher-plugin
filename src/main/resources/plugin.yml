@@ -1,0 +1,16 @@
+name: PublisherPlugin
+main: org.sandcast.publisher.plugin.PublisherPlugin
+version: ${version}
+database: true
+commands:
+  discord:
+    description: manage discord publishing.
+    usage: |
+      /discord set player guild channel
+      /discord clear player
+  discord set:
+    description: register player discord output
+    usage: /discord set player guild channel
+  discord clear:
+    description: unregister player discord output
+    usage: /discord clear player
