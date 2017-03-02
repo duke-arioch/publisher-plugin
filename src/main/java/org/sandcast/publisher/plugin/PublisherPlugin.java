@@ -1,9 +1,10 @@
 package org.sandcast.publisher.plugin;
 
-import com.mashape.unirest.http.Unirest;
-import java.io.IOException;
+//import com.mashape.unirest.http.Unirest;
+import java.util.Set;
 import org.sandcast.publisher.plugin.listener.PublishableEventListener;
 import java.util.logging.Level;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,15 +19,14 @@ public class PublisherPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        try {
-            Unirest.shutdown();
-        } catch (IOException ex) {
-            getLogger().log(Level.SEVERE, null, ex);
-        }
+        HandlerList.unregisterAll(publishableListener);
     }
 
     @Override
     public void onEnable() {
+        getConfig().addDefault("discord-token", "DISCORD-TOKEN");
+        getConfig().options().copyDefaults(true);
+        saveConfig();
         final String pluginToken = getConfig().getString("discord-token");
         adapter = new DiscordAdapter(pluginToken); //could instead register multiple including httpaddapter...
         publishableListener = new PublishableEventListener(adapter);
@@ -39,5 +39,9 @@ public class PublisherPlugin extends JavaPlugin {
 
     public PublishingAdapter getWireController() {
         return adapter;
+    }
+    
+    public Set<String> publisherTargets() {
+        return adapter.publisherTargets();
     }
 }

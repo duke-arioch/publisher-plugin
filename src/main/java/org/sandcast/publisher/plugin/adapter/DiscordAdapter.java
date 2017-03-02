@@ -1,8 +1,10 @@
 package org.sandcast.publisher.plugin.adapter;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.security.auth.login.LoginException;
@@ -20,9 +22,9 @@ public class DiscordAdapter implements PublishingAdapter {
     public DiscordAdapter(String discordToken) {
         playerChannels = new HashMap<>();
         try {
-            jda = new JDABuilder(AccountType.BOT).setToken(discordToken).buildBlocking();
-        } catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException ex) {
-            Logger.getLogger(DiscordAdapter.class.getName()).log(Level.SEVERE, null, ex);
+            jda = new JDABuilder(AccountType.BOT).setToken(discordToken).buildAsync();
+        } catch (LoginException | IllegalArgumentException | RateLimitedException ex) {
+            Logger.getLogger(DiscordAdapter.class.getName()).log(Level.SEVERE, "Discord Login Failure", ex);
         }
     }
 
@@ -48,7 +50,12 @@ public class DiscordAdapter implements PublishingAdapter {
     @Override
     public void publish(String playerName, String message) {
         if (playerChannels.containsKey(playerName)) {
-            playerChannels.get(playerName).sendMessage(message).complete();
+            playerChannels.get(playerName).sendMessage(message).queue();
         }
+    }
+
+    @Override
+    public Set<String> publisherTargets() {
+        return Collections.unmodifiableSet(playerChannels.keySet());
     }
 }

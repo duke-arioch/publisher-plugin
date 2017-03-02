@@ -1,9 +1,10 @@
 package org.sandcast.publisher.plugin.adapter;
 
-import com.mashape.unirest.http.Unirest;
+//import com.mashape.unirest.http.Unirest;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.Bukkit;
+import java.util.Set;
 import org.sandcast.publisher.plugin.PublisherPlugin;
 
 public class HttpAdapter implements PublishingAdapter {
@@ -12,7 +13,7 @@ public class HttpAdapter implements PublishingAdapter {
 
     public HttpAdapter(PublisherPlugin plugin) {
         playerUrls = new HashMap<>();
-        Unirest.setTimeouts(1000, 2000);
+//        Unirest.setTimeouts(1000, 2000);
     }
 
     @Override
@@ -29,13 +30,18 @@ public class HttpAdapter implements PublishingAdapter {
     public void publish(String player, String contents) {
         if (playerUrls.containsKey(player)) {
             String url = playerUrls.get(player);
-            Unirest.post(url)
-                    .header("Content-Type", "application/x-www-form-urlencoded")
-                    .field("PLAYER", player)
-                    .field("CONTENT", contents)
-                    .field("SERVER_NAME", Bukkit.getServerName())
-                    .field("SERVER_ID", Bukkit.getServerId())
-                    .asStringAsync();
+//            Unirest.post(url)
+//                    .header("Content-Type", "application/x-www-form-urlencoded")
+//                    .field("PLAYER", player)
+//                    .field("CONTENT", contents)
+//                    .field("SERVER_NAME", Bukkit.getServerName())
+//                    .field("SERVER_ID", Bukkit.getServerId())
+//                    .asStringAsync();
         }
+    }
+
+    @Override
+    public Set<String> publisherTargets() {
+        return Collections.unmodifiableSet(playerUrls.keySet());
     }
 }
